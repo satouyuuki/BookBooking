@@ -15,9 +15,11 @@ namespace BookBooking.Controllers
     public class BooksController : ControllerBase
     {
         private readonly BookContext _context;
+        private readonly ILogger<BooksController> _logger;
 
-        public BooksController(BookContext context)
+        public BooksController(ILogger<BooksController> logger, BookContext context)
         {
+            _logger = logger;
             _context = context;
         }
         
