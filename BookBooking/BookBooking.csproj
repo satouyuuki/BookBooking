@@ -13,16 +13,22 @@
 
   <ItemGroup>
     <None Remove="Models\" />
+    <None Remove="Views\" />
+    <None Remove="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\ts\" />
+    <Folder Include="Views\" />
+    <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
     <Content Remove="wwwroot\js\" />
     <Content Remove="wwwroot\css\" />
+    <Content Remove="wwwroot\ts\" />
   </ItemGroup>
 </Project>

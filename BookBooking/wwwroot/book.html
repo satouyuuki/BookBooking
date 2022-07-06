@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>本の貸し借りAPP</title>
+    <link rel="stylesheet" href="css/site.css" />
+</head>
+<body>
+    <h1>本の一覧</h1>
+    <h3>本の追加</h3>
+    <form action="javascript:void(0);" method="POST" onsubmit="addBook()">
+        <input type="text"
+               name="title"
+               id="title"
+               placeholder="本のタイトル">
+        <textarea
+                  name="description"
+                  id="description"
+                  placeholder="本の説明"></textarea>
+        <input type="text"
+               name="imageUrl"
+               id="imageUrl"
+               placeholder="画像URL">
+        <input type="submit" value="追加">
+    </form>
+
+    <div id="editForm">
+        <h3>編集</h3>
+        <form action="javascript:void(0);" onsubmit="updateBook()">
+            <input type="hidden" id="editId">
+            <input type="text" id="editTitle">
+            <textarea id="editDescription"
+                      placeholder="本の説明"></textarea>
+            <input type="text"
+                   id="editImageUrl"
+                   placeholder="画像URL">
+            <input type="submit" value="更新">
+            <a onclick="closeInput()" aria-label="Close">&#10006;</a>
+        </form>
+    </div>
+
+    <p id="counter"></p>
+
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>ImageUrl</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tbody id="books"></tbody>
+    </table>
+
+    <script src="js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        getBooks();
+    </script>
+</body>
+</html>
