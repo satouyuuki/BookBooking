@@ -1,0 +1,10 @@
+﻿@model BookBooking.Models.Book
+
+<h1>Edit</h1>
+<form asp-action="Edit">
+    <label asp-for="Title" />
+    <input asp-for="Title" />
+    <label asp-for="Description" />
+    <textarea asp-for="Description"></textarea>
+    <button type="submit">更新</button>
+</form>

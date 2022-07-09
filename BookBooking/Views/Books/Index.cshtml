@@ -1,0 +1,25 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+
+@model IEnumerable<BookBooking.Models.Book>
+
+<ul>
+    @foreach (var item in Model)
+    {
+            <li>
+                <span>@item.Id</span>
+                <h3>@item.Title</h3>
+                <p>@item.Description</p>
+                <a asp-action="Detail" asp-route-id="@item.Id">Detail</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                <form asp-action="Delete" asp-route-id="@item.Id">
+                    <button type="submit" value="Delete">Delete</button>
+                </form>
+                <img src="@item.ImageUrl" alt="@item.Title" />
+            </li>
+    }
+</ul>

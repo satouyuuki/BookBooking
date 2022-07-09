@@ -14,99 +14,111 @@ namespace BookBooking.Controllers
     [Authorize]
     public class BooksController : Controller
     {
-        public IActionResult Index()
+        private readonly BookContext _context;
+        private readonly ILogger<BooksController> _logger;
+
+        public BooksController(ILogger<BooksController> logger, BookContext context)
         {
-            return new ContentResult { Content = "Home.Index" };
+            _logger = logger;
+            _context = context;
         }
-        //private readonly BookContext _context;
-        //private readonly ILogger<BooksController> _logger;
 
-        //public BooksController(ILogger<BooksController> logger, BookContext context)
-        //{
-        //    _logger = logger;
-        //    _context = context;
-        //}
+        public async Task<ActionResult<IEnumerable<Book>>> Index()
+        {
+            return View(await _context.Books.ToListAsync());
+        }
 
-        //// GET: api/values
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Book>>> Get()
-        //{
-        //    return await _context.Books.ToListAsync();
-        //}
 
-        //// GET api/values/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<Book>> Get(int id)
-        //{
-        //    var book = await _context.Books.FindAsync(id);
+        // GET api/values/5
+        public async Task<ActionResult<Book>> Detail(int id)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
 
-        //    if(book == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (book == null)
+            {
+                return NotFound();
+            }
 
-        //    return book;
-        //}
+            return View(book);
+        }
 
-        //// POST api/values
-        //[HttpPost]
-        //public async Task<ActionResult<Book>> Post(Book book)
-        //{
-        //    _context.Books.Add(book);
-        //    await _context.SaveChangesAsync();
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //    return CreatedAtAction(nameof(Get), new { id = book.Id }, book);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        // POST api/values
+        public async Task<ActionResult<Book>> Create(Book book)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Books.Add(book);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
 
-        //// PUT api/values/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> Put(int id, Book book)
-        //{
-        //    if(id != book.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            return View(book);
+        }
 
-        //    _context.Entry(book).State = EntityState.Modified;
+        // get: Books/Edit/5
+        public async Task<ActionResult<Book>> Edit(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
+            return View(book);
+        }
 
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!BookExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+        // PUT api/values/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Book book)
+        {
+            if (id != book.Id)
+            {
+                return NotFound();
+            }
+            //_context.Entry(book).State = EntityState.Modified;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //await _context.SaveChangesAsync();
+                    _context.Update(book);
+                    await _context.SaveChangesAsync();
 
-        //    return NoContent();
-        //}
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!BookExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(book);
+        }
 
-        //// DELETE api/values/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var book = await _context.Books.FindAsync(id);
-        //    if(book == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // DELETE api/values/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var book = await _context.Books.FindAsync(id);
 
-        //    _context.Books.Remove(book);
-        //    await _context.SaveChangesAsync();
+            _context.Books.Remove(book);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-        //    return NoContent();
-        //}
-
-        //private bool BookExists(int id)
-        //{
-        //    return _context.Books.Any(book => book.Id == id);
-        //}
+        private bool BookExists(int id)
+        {
+            return _context.Books.Any(book => book.Id == id);
+        }
     }
 }

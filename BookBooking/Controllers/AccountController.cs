@@ -19,7 +19,7 @@ namespace BookBooking.Controllers
         }
 
         [HttpPost]
-        public async Task Login([FromForm] LoginRequest loginRequest)
+        public async Task<IActionResult> Login([FromForm] LoginRequest loginRequest)
         {
             var claims = new Claim[]
             {
@@ -34,12 +34,14 @@ namespace BookBooking.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
-        public async Task Logout()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
         public class LoginRequest
