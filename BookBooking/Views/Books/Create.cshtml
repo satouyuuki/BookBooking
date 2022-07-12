@@ -1,8 +1,12 @@
 ﻿@model BookBooking.Models.Book
 
 <h1>Create</h1>
-<form asp-action="Create">
+<form asp-action="Create" enctype="multipart/form-data">
+    <label asp-for="Title" />
     <input asp-for="Title" />
-    <input asp-for="Description" />
+    <label asp-for="Description" />
+    <textarea asp-for="Description"></textarea>
+    <label asp-for="File" />
+    <input type="file" asp-for="File" />
     <button type="submit">作成</button>
 </form>

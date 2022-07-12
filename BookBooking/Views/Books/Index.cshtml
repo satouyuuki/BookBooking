@@ -19,7 +19,7 @@
                 <form asp-action="Delete" asp-route-id="@item.Id">
                     <button type="submit" value="Delete">Delete</button>
                 </form>
-                <img src="@item.ImageUrl" alt="@item.Title" />
+                    <img src="~/Uploads/@item.ImageUrl" alt="@item.Title" />
             </li>
     }
 </ul>

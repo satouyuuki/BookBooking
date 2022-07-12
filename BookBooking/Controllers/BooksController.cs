@@ -6,6 +6,8 @@ using BookBooking.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+//using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,11 +18,17 @@ namespace BookBooking.Controllers
     {
         private readonly BookContext _context;
         private readonly ILogger<BooksController> _logger;
+        private IHostingEnvironment mxHostingEnvironment { get; set; }
 
-        public BooksController(ILogger<BooksController> logger, BookContext context)
+        public BooksController(
+            ILogger<BooksController> logger,
+            BookContext context,
+            IHostingEnvironment hostingEnvironment
+            )
         {
             _logger = logger;
             _context = context;
+            mxHostingEnvironment = hostingEnvironment;
         }
 
         public async Task<ActionResult<IEnumerable<Book>>> Index()
@@ -54,6 +62,22 @@ namespace BookBooking.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (book.File != null && book.File.Length > 0)
+                {
+                    //upload files to wwwroot
+                    var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
+                        Path.GetFileName(book.File.FileName);
+                    //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
+                    var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
+
+                    using (var fileSteam = new FileStream(filePath, FileMode.Create))
+                    {
+                        await book.File.CopyToAsync(fileSteam);
+                    }
+                    //your logic to save filePath to database
+                    book.ImageUrl = fileName;
+                }
+
                 _context.Books.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

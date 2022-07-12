@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 
 namespace BookBooking.Models
@@ -9,6 +10,8 @@ namespace BookBooking.Models
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? ImageUrl { get; set; }
+        [NotMapped]
+        public IFormFile? File { get; set; }
     }
 }
 

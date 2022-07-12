@@ -29,6 +29,7 @@
     <Folder Include="Views\Books\" />
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\lib\" />
+    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
@@ -36,5 +37,6 @@
     <Content Remove="wwwroot\css\" />
     <Content Remove="wwwroot\ts\" />
     <Content Remove="wwwroot\lib\" />
+    <Content Remove="wwwroot\Uploads\" />
   </ItemGroup>
 </Project>
