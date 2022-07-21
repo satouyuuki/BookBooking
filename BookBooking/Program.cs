@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+ConfigurationManager configuration = builder.Configuration;
+
 // Add services to the container.
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -20,7 +22,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<BookContext>(opt =>
-    opt.UseInMemoryDatabase("Books"));
+    opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddMvc(options =>
 {

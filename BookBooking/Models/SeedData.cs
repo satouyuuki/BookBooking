@@ -17,36 +17,13 @@ namespace BookBooking.Models
                     return; // DB has been seeded
                 }
 
-                context.Books.AddRange(
+                context.Books.Add(
                     new Book
                     {
-                        Id = 1,
                         Title = "test1",
                         Description = "test1 desc",
                         ImageUrl = "20220712010812_buranko_girl_sad.png"
-                    },
-                    new Book
-                    {
-                        Id = 2,
-                        Title = "test2",
-                        Description = "test2 desc",
-                        ImageUrl = "20220712010812_buranko_girl_sad.png"
-                    },
-                    new Book
-                    {
-                        Id = 3,
-                        Title = "test3",
-                        Description = "test3 desc",
-                        ImageUrl = "20220712010812_buranko_girl_sad.png"
-                    },
-                    new Book
-                    {
-                        Id = 4,
-                        Title = "test4",
-                        Description = "test4 desc",
-                        ImageUrl = "20220712010812_buranko_girl_sad.png"
-                    }
-                    );
+                    });
                 context.SaveChanges();
 
             }
