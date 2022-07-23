@@ -21,8 +21,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 //builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 //builder.Services.AddEndpointsApiExplorer();
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
 builder.Services.AddDbContext<BookContext>(opt =>
-    opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+    //opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+    opt.UseMySql(configuration.GetConnectionString("DefaultConnection"), serverVersion)
+    );
 
 builder.Services.AddMvc(options =>
 {
