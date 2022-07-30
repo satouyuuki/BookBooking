@@ -51,9 +51,22 @@ using(var scope = app.Services.CreateScope())
 //}
 
 //app.UseDefaultFiles();
-app.UseStaticFiles();
+//app.UseStaticFiles();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
+//app.UseStatusCodePages();
 
 app.UseAuthentication();
 app.UseAuthorization();

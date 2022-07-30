@@ -1,18 +1,7 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model BookBooking.Models.LoginViewModel
 
-@model BookBooking.Models.User
-
-<form asp-controller="Account" asp-action="Login">
-    <div asp-validation-summary="All"></div>
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username"></span>
-    </div>
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
     <div>
         <label asp-for="Email"></label>
         <input asp-for="Email" />

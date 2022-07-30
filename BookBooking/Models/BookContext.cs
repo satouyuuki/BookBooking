@@ -10,7 +10,8 @@ namespace BookBooking.Models
         {
         }
 
-        public DbSet<Book> Books { get; set; } = null!;
+        public DbSet<Book> Books { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
 
