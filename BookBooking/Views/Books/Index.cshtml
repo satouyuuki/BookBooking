@@ -1,25 +1,22 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model IEnumerable<BookBooking.Models.BookListViewModel>
 
-}
 
-@model IEnumerable<BookBooking.Models.Book>
-
-<ul>
-    @foreach (var item in Model)
-    {
-            <li>
-                <span>@item.Id</span>
-                <h3>@item.Title</h3>
-                <p>@item.Description</p>
-                <a asp-action="Detail" asp-route-id="@item.Id">Detail</a>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                <form asp-action="Delete" asp-route-id="@item.Id">
-                    <button type="submit" value="Delete">Delete</button>
-                </form>
-                    <img src="~/Uploads/@item.ImageUrl" alt="@item.Title" />
-            </li>
-    }
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h6 class="text-muted">List Group with Images</h6>
+            <div class="list-group">
+                @foreach (var item in Model)
+                {
+                    <a asp-action="Detail" asp-route-id="@item.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        @item.Title
+                        <div class="image-parent">
+                            <img src="~/@item.GetImageUrl()" alt="@item.Title" class="img-thumbnail" style="max-height: 100px;">
+                            <span class="badge bg-primary rounded-pill">@item.Status</span>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System;
 using BookBooking.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookBooking.Migrations
 {
     [DbContext(typeof(BookContext))]
-    partial class BookContextModelSnapshot : ModelSnapshot
+    [Migration("20220731052638_ChangeBookHistoryPropertyAttribute")]
+    partial class ChangeBookHistoryPropertyAttribute
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +51,7 @@ namespace BookBooking.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReservedDate")
+                    b.Property<DateTime>("BorrowedDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("ReturnDate")
@@ -62,10 +64,6 @@ namespace BookBooking.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("BookHistoryId");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("BookHistory");
                 });
@@ -97,25 +95,6 @@ namespace BookBooking.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("BookBooking.Models.BookHistory", b =>
-                {
-                    b.HasOne("BookBooking.Models.Book", "BooksTable")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookBooking.Models.User", "UsersTable")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("BooksTable");
-
-                    b.Navigation("UsersTable");
                 });
 #pragma warning restore 612, 618
         }

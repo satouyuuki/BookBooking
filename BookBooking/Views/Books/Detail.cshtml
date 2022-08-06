@@ -1,6 +1,56 @@
-﻿@model BookBooking.Models.Book
+﻿@model BookBooking.Models.BookDetailViewModel
 
-<span>@Model.Id</span>
+@*<span>@Model.Id</span>
 <h3>@Model.Title</h3>
 <p>@Model.Description</p>
-<img src="@Model.ImageUrl" alt="@Model.Title"/>
+<img src="~/@Model.GetImageUrl()" alt="@Model.Title"/>
+<span class="badge bg-primary rounded-pill">@Model.Status</span>
+
+<form asp-route="Borrow" asp-route-id="@Model.Id" method="post">
+    
+    <button type="submit">借りる</button>
+</form>*@
+
+
+<div class="card" style="max-width: 500px;">
+    <div class="row g-0">
+        <div class="col-sm-5">
+            <img src="~/@Model.GetImageUrl()" class="card-img-top h-100" alt="@Model.Title">
+        </div>
+        <div class="col-sm-7">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Title</h5>
+                <p class="card-text">@Model.Description</p>
+
+                <span class="badge bg-primary rounded-pill">@Model.Status</span>
+                @{
+                    var routeName = new Dictionary<string, string>();
+                    switch (Model.Status)
+                    {
+                        case BookBooking.Models.BookStatus.AvailableForLend:
+                            routeName.Add("Borrow", "借りる");
+                            break;
+                        case BookBooking.Models.BookStatus.Borrowed:
+                            routeName.Add("Return", "返す");
+                            break;
+                        case BookBooking.Models.BookStatus.Reservation:
+                            routeName.Add("Cancel", "キャンセルする");
+                            break;
+                        case BookBooking.Models.BookStatus.Reserved:
+                            routeName.Add("Reserve", "予約する");
+                            break;
+                        default:
+                            throw new Exception("book state error");
+                            break;
+                    }
+                }
+                <form
+                    asp-route="@routeName.Keys.FirstOrDefault()"
+                    asp-route-id="@Model.Id"
+                    method="post">
+                    <button class="btn btn-primary stretched-link">@routeName.Values.FirstOrDefault()</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

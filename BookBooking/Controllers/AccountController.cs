@@ -55,8 +55,9 @@ namespace BookBooking.Controllers
 
                 var claims = new Claim[]
                 {
-                    //new Claim(ClaimTypes.Name, viewModel.Email),
-                    new Claim(ClaimTypes.Email, viewModel.Email)
+                    new Claim(ClaimTypes.PrimarySid, currentUser.Id.ToString()),
+                    new Claim(ClaimTypes.Name, currentUser.Name),
+                    new Claim(ClaimTypes.Email, currentUser.Email)
                 };
 
                 var identity = new ClaimsIdentity(claims,
