@@ -71,7 +71,10 @@ else
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMvcWithDefaultRoute();
+//app.UseMvcWithDefaultRoute();
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Books}/{action=Index}/{id?}");
 
 //app.MapControllers();
 

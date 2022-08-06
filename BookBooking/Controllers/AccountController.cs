@@ -57,7 +57,8 @@ namespace BookBooking.Controllers
                 {
                     new Claim(ClaimTypes.PrimarySid, currentUser.Id.ToString()),
                     new Claim(ClaimTypes.Name, currentUser.Name),
-                    new Claim(ClaimTypes.Email, currentUser.Email)
+                    new Claim(ClaimTypes.Email, currentUser.Email),
+                    new Claim(ClaimTypes.Role, currentUser.Role.ToString())
                 };
 
                 var identity = new ClaimsIdentity(claims,
@@ -82,7 +83,8 @@ namespace BookBooking.Controllers
                 var model = new User() {
                     Name = viewModel.Username,
                     Email = viewModel.Email,
-                    Password = viewModel.Password
+                    Password = viewModel.Password,
+                    Role = viewModel.Role
                 };
 
                 _context.Add(model);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
 namespace BookBooking.Models
 {
@@ -20,6 +21,27 @@ namespace BookBooking.Models
             if (string.IsNullOrEmpty(ImageUrl))
                 return $"{baseDir}/noImage.png";
             return $"{baseDir}/{ImageUrl}";
+        }
+
+        public KeyValuePair<string, string> RouteName
+        {
+            get
+            {
+                switch (Status)
+                {
+                    case BookBooking.Models.BookStatus.AvailableForLend:
+                        return new KeyValuePair<string, string>("Borrow", "借りる");
+                    case BookBooking.Models.BookStatus.Borrowed:
+                        return new KeyValuePair<string, string>("Return", "返す");
+                    case BookBooking.Models.BookStatus.Reservation:
+                        return new KeyValuePair<string, string>("Cancel", "キャンセルする");
+                    case BookBooking.Models.BookStatus.Reserved:
+                        return new KeyValuePair<string, string>("Reserve", "予約する");
+                    default:
+                        throw new Exception("book state error");
+                }
+
+            }
         }
     }
 }

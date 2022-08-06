@@ -35,10 +35,6 @@ namespace BookBooking.Controllers
 
         public ActionResult<IEnumerable<BookListViewModel>> Index()
         {
-            //var query = from book in _context.Set<Book>()
-            //            join bookHistory in _context.Set<BookHistory>()
-            //                on book.Id equals bookHistory.BookId
-            //            select new { book, bookHistory };
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
             var books = _context.Books.ToList();
             var bookHistory = _context.BookHistory.ToList();
@@ -64,9 +60,9 @@ namespace BookBooking.Controllers
                 x.UserId == userId &&
                 x.ScheduledReturnDate == DateTime.MinValue);
             var isBorrowed = notReturnedBookList.Any(x =>
-                            x.BookId == bookId &&
-                            x.UserId == userId &&
-                            x.ScheduledReturnDate != DateTime.MinValue);
+                x.BookId == bookId &&
+                x.UserId == userId &&
+                x.ScheduledReturnDate != DateTime.MinValue);
             var isReserved = notReturnedBookList.Any(x => x.BookId == bookId && x.UserId != userId);
 
             // 全ての本が返却ずみ
@@ -204,6 +200,7 @@ namespace BookBooking.Controllers
         }
 
         // get: Books/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Book>> Edit(int id)
         {
             var book = await _context.Books.FindAsync(id);

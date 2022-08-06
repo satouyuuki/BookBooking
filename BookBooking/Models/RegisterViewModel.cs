@@ -22,5 +22,7 @@ namespace BookBooking.Models
         [DataType(DataType.Password)]
         [Display(Name = "パスワード")]
         public string Password { get; set; } = String.Empty;
+
+        public UserRole Role { get; set; }
     }
 }

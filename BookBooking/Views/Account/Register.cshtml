@@ -25,6 +25,11 @@
         <span asp-validation-for="Password"></span>
     </div>
     <div>
+        <select asp-for="Role" asp-items="Html.GetEnumSelectList<BookBooking.Models.UserRole>()">
+            <option selected="selected" value="">Please select</option>
+        </select>
+    </div>
+    <div>
         <button type="submit">登録</button>
     </div>
 </form>

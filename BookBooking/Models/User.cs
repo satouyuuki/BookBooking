@@ -31,6 +31,8 @@ namespace BookBooking.Models
         [Required]
         [MaxLength(255)]
         public string? Password { get; set; }
+        [Required]
+        public UserRole Role { get; set; } = UserRole.ServiceUser;
     }
 }
 
