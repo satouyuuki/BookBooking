@@ -10,7 +10,7 @@ using MySqlConnector;
 
 namespace BookBooking.Controllers
     {
-        public class AccountController : Controller
+        public class AccountController : ControllerBase
         {
             private readonly BookContext _context;
             private readonly ILogger<BooksController> _logger;

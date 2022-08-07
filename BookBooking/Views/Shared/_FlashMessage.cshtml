@@ -1,0 +1,17 @@
+﻿@{
+    string text = (string)TempData["FlashMessage.Text"];
+    string cssClass = null;
+    if (!string.IsNullOrEmpty(text))
+    {
+        BookBooking.Models.FlashMessageType type = (BookBooking.Models.FlashMessageType)TempData["FlashMessage.Type"];
+        cssClass = type.ToString().ToLower();
+    }
+}
+
+@if (!string.IsNullOrEmpty(text)) {
+    <div class="alert alert-@cssClass">
+        <span>
+            @text
+        </span>
+    </div>
+}

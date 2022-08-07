@@ -16,7 +16,7 @@ using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace BookBooking.Controllers
 {
     [Authorize]
-    public class BooksController : Controller
+    public class BooksController : ControllerBase
     {
         private readonly BookContext _context;
         private readonly ILogger<BooksController> _logger;
@@ -171,32 +171,36 @@ namespace BookBooking.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // POST api/values
-        public async Task<ActionResult<Book>> Create(Book book)
+        public async Task<ActionResult<Book>> Create(UploadedBookViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(viewModel);
+
+            var model = new Book
             {
-                if (book.File != null && book.File.Length > 0)
+                Title = viewModel.Title,
+                Description = viewModel.Description
+            };
+
+            if (viewModel.File != null && viewModel.File.Length > 0)
+            {
+                //upload files to wwwroot
+                var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
+                    Path.GetFileName(viewModel.File.FileName);
+                //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
+                var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
+
+                using (var fileSteam = new FileStream(filePath, FileMode.Create))
                 {
-                    //upload files to wwwroot
-                    var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
-                        Path.GetFileName(book.File.FileName);
-                    //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
-                    var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
-
-                    using (var fileSteam = new FileStream(filePath, FileMode.Create))
-                    {
-                        await book.File.CopyToAsync(fileSteam);
-                    }
-                    //your logic to save filePath to database
-                    book.ImageUrl = fileName;
+                    await viewModel.File.CopyToAsync(fileSteam);
                 }
-
-                _context.Books.Add(book);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //your logic to save filePath to database
+                model.ImageUrl = fileName;
             }
 
-            return View(book);
+            _context.Books.Add(model);
+            await _context.SaveChangesAsync();
+            SetFlash(FlashMessageType.Success, "ほんの登録に成功しました。");
+            return RedirectToAction(nameof(Index));
         }
 
         // get: Books/Edit/5

@@ -1,12 +1,23 @@
-﻿@model BookBooking.Models.Book
+﻿@model BookBooking.Models.UploadedBookViewModel
 
-<h1>Create</h1>
+<h1>本の登録</h1>
+
 <form asp-action="Create" enctype="multipart/form-data">
-    <label asp-for="Title" />
-    <input asp-for="Title" />
-    <label asp-for="Description" />
-    <textarea asp-for="Description"></textarea>
-    <label asp-for="File" />
-    <input type="file" asp-for="File" />
-    <button type="submit">作成</button>
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label" />
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label" />
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description"></span>
+    </div>
+    <div class="mb-3 form-check">
+        <label asp-for="File" class="form-label" />
+        <input asp-for="File" class="form-control" accept="image/*">
+        <span asp-validation-for="File"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">登録</button>
 </form>
