@@ -1,39 +1,34 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model BookBooking.Models.RegisterViewModel
 
-@model BookBooking.Models.RegisterViewModel
-
+<h1>Sign up</h1>
 <form method="post">
-    @*<form asp-controller="Account" asp-action="Register">*@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div>
+    <div class="form-outline mb-4">
         <label asp-for="Username"></label>
-        <input asp-for="Username" />
+        <input asp-for="Username" class="form-control" />
         <span asp-validation-for="Username"></span>
     </div>
-    <div>
+    <div class="form-outline mb-4">
         <label asp-for="Email"></label>
-        <input asp-for="Email" />
+        <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email"></span>
     </div>
-    <div>
+    <div class="form-outline mb-4">
         <label asp-for="Password"></label>
-        <input asp-for="Password" />
+        <input asp-for="Password" class="form-control" />
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
+    <div class="form-outline mb-4">
+        <label asp-for="Role"></label>
         <select asp-for="Role" asp-items="Html.GetEnumSelectList<BookBooking.Models.UserRole>()">
-            <option selected="selected" value="">Please select</option>
+
         </select>
     </div>
-    <div>
-        <button type="submit">登録</button>
+
+    <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+
+    <!-- Register link -->
+    <div class="text-center">
+        <p>Already registered? <a asp-action="Login">Login</a></p>
     </div>
 </form>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

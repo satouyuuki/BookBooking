@@ -25,7 +25,7 @@ namespace BookBooking.Controllers
             }
 
             [HttpGet]
-            public IActionResult Login()
+            public IActionResult Login(string returnUrl)
             {
                 return View();
             }
@@ -56,7 +56,6 @@ namespace BookBooking.Controllers
                 var claims = new Claim[]
                 {
                     new Claim(ClaimTypes.PrimarySid, currentUser.Id.ToString()),
-                    new Claim(ClaimTypes.Name, currentUser.Name),
                     new Claim(ClaimTypes.Email, currentUser.Email),
                     new Claim(ClaimTypes.Role, currentUser.Role.ToString())
                 };
@@ -68,6 +67,7 @@ namespace BookBooking.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
                     principal);
+                SetFlash(FlashMessageType.Success, "ログインに成功しました。");
                 return RedirectToAction("Index", "Books");
             }
 
@@ -91,6 +91,7 @@ namespace BookBooking.Controllers
                 try
                 {
                     _context.SaveChanges();
+                    SetFlash(FlashMessageType.Success, "登録に成功しました。");
                     return RedirectToAction(nameof(Login));
                 }
                 catch (DbUpdateException ex)
@@ -108,7 +109,7 @@ namespace BookBooking.Controllers
             public async Task<IActionResult> Logout()
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction();
             }
 
             public class LoginRequest

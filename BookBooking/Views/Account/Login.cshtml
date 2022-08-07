@@ -1,18 +1,43 @@
 ﻿@model BookBooking.Models.LoginViewModel
 
+<h1>Sign in</h1>
 <form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <!-- Email input -->
+    <div class="form-outline mb-4">
+        <input asp-for="Email" class="form-control" />
+        <label asp-for="Email" />
         <span asp-validation-for="Email"></span>
     </div>
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
+
+    <!-- Password input -->
+    <div class="form-outline mb-4">
+        <input asp-for="Password" class="form-control" />
+        <label asp-for="Password" />
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
-        <button type="submit">送信</button>
+
+    <!-- 2 column grid layout for inline styling -->
+    <div class="row mb-4">
+        <div class="col d-flex justify-content-center">
+            <!-- TODO: Checkbox -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="isRemember" checked />
+                <label class="form-check-label" for="isRemember"> Remember me </label>
+            </div>
+        </div>
+
+        <div class="col">
+            <!-- TODO: Simple link -->
+            <a href="#">Forgot password?</a>
+        </div>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+
+    <!-- Register link -->
+    <div class="text-center">
+        <p>Not a member? <a asp-action="Register">Register</a></p>
     </div>
 </form>
