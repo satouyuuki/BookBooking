@@ -163,6 +163,7 @@ namespace BookBooking.Controllers
             return RedirectToAction("Detail", new { id = id });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -170,6 +171,7 @@ namespace BookBooking.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         // POST api/values
         public async Task<ActionResult<Book>> Create(UploadedBookViewModel viewModel)
         {
@@ -199,51 +201,79 @@ namespace BookBooking.Controllers
 
             _context.Books.Add(model);
             await _context.SaveChangesAsync();
-            SetFlash(FlashMessageType.Success, "ほんの登録に成功しました。");
+            SetFlash(FlashMessageType.Success, "本の登録に成功しました。");
             return RedirectToAction(nameof(Index));
         }
 
         // get: Books/Edit/5
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<Book>> Edit(int id)
+        public async Task<ActionResult<UploadedBookViewModel>> Edit(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            return View(book);
+            var model = await _context.Books.FindAsync(id);
+
+            var viewModel = new UploadedBookViewModel
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Description = model.Description,
+                ImageUrl = model.ImageUrl
+            };
+            return View(viewModel);
         }
 
         // PUT api/values/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Book book)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Edit(int id, UploadedBookViewModel viewModel)
         {
-            if (id != book.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
             //_context.Entry(book).State = EntityState.Modified;
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    //await _context.SaveChangesAsync();
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
+            if (!ModelState.IsValid) return View(new { id = id });
 
-                }
-                catch (DbUpdateConcurrencyException)
+            var model = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
+
+            if (string.IsNullOrWhiteSpace(viewModel.Title)) model.Title = viewModel.Title;
+            if (string.IsNullOrWhiteSpace(viewModel.Description)) model.Description = viewModel.Description;
+
+
+            if (viewModel.File != null && viewModel.File.Length > 0)
+            {
+                //upload files to wwwroot
+                var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
+                    Path.GetFileName(viewModel.File.FileName);
+                //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
+                var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
+
+                using (var fileSteam = new FileStream(filePath, FileMode.Create))
                 {
-                    if (!BookExists(id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    await viewModel.File.CopyToAsync(fileSteam);
                 }
-                return RedirectToAction(nameof(Index));
+                //your logic to save filePath to database
+                model.ImageUrl = fileName;
             }
-            return View(book);
+
+            try
+            {
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            SetFlash(FlashMessageType.Success, "本の更新に成功しました。");
+            return RedirectToAction(nameof(Index));
         }
 
         // DELETE api/values/5
@@ -255,6 +285,7 @@ namespace BookBooking.Controllers
 
             _context.Books.Remove(book);
             await _context.SaveChangesAsync();
+            SetFlash(FlashMessageType.Success, "本の削除に成功しました。");
             return RedirectToAction(nameof(Index));
         }
 
