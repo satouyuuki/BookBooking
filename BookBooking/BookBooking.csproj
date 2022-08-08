@@ -24,6 +24,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Pomelo.EntityFrameworkCore.MySql" />
+    <None Remove="Microsoft.AspNetCore.Cryptography.KeyDerivation" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

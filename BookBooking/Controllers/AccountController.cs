@@ -1,10 +1,11 @@
-﻿    using System;
-    using System.Security.Claims;
-    using BookBooking.Models;
-    using Microsoft.AspNetCore.Authentication;
-    using Microsoft.AspNetCore.Authentication.Cookies;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Security.Claims;
+using BookBooking.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 
@@ -47,7 +48,9 @@ namespace BookBooking.Controllers
                     ModelState.AddModelError("Email", "メールアドレスが登録されていません。");
                     return View(viewModel);
                 }
-                else if (currentUser.Password != viewModel.Password)
+                var isVerfyPassword = new PasswordHasher<ClaimsPrincipal>().VerifyHashedPassword(User, currentUser.Password, viewModel.Password) == PasswordVerificationResult.Success;
+                //else if (currentUser.Password != viewModel.Password)
+                if (!isVerfyPassword)
                 {
                     ModelState.AddModelError("Password", "パスワードが一致しません。");
                     return View(viewModel);
@@ -83,7 +86,7 @@ namespace BookBooking.Controllers
                 var model = new User() {
                     Name = viewModel.Username,
                     Email = viewModel.Email,
-                    Password = viewModel.Password,
+                    Password = new PasswordHasher<ClaimsPrincipal>().HashPassword(User, viewModel.Password),
                     Role = viewModel.Role
                 };
 
