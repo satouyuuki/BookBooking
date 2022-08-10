@@ -167,7 +167,7 @@ namespace BookBooking.Controllers
 
         [Authorize]
         [HttpPost, ValidateAntiForgeryToken]
-        public IActionResult Delete(UserInfoViewModel viewModel)
+        public async Task<IActionResult> Delete(UserInfoViewModel viewModel)
         {
             var entity = _context.Users.FirstOrDefault(x => x.Id == viewModel.Id);
             _context.Users.Remove(entity);
