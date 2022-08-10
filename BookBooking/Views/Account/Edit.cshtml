@@ -1,0 +1,31 @@
+﻿@model BookBooking.Models.UserInfoViewModel
+
+<h1>ユーザー情報</h1>
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id" />
+    <div class="form-outline mb-4">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-outline mb-4">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="form-outline mb-4">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="form-outline mb-4">
+        <label asp-for="NewPassword"></label>
+        <input asp-for="NewPassword" class="form-control" />
+        <span asp-validation-for="NewPassword" class="text-danger"></span>
+    </div>
+
+    <button asp-action="Edit" class="btn btn-primary btn-block mb-4">ユーザー情報を変更</button>
+    <button asp-action="Delete" class="btn btn-secondary btn-block mb-4">ユーザー情報を削除</button>
+
+</form>
