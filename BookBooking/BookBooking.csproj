@@ -25,6 +25,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Pomelo.EntityFrameworkCore.MySql" />
     <None Remove="Microsoft.AspNetCore.Cryptography.KeyDerivation" />
+    <None Remove="Views\BookHistory\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -38,6 +39,7 @@
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\Uploads\" />
+    <Folder Include="Views\BookHistory\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />

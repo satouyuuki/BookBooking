@@ -1,0 +1,36 @@
+﻿@model IEnumerable<BookBooking.Models.BookHistoryViewModel>
+
+
+<div class="container">
+    <div class="row">
+        @*TODO: 検索ボックス*@
+
+        <div class="col">
+            <div class="list-group">
+                @foreach (var item in Model)
+                {
+                    <span>予約日: @item.Usage.ReservedDate</span>
+                    <a asp-action="Detail" asp-route-id="@item.BookId" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        @item.Title
+                        <div class="image-parent">
+                            <img src="~/@item.GetImageUrl()" alt="@item.Title" class="img-thumbnail" style="max-height: 100px;">
+                            <span class="badge bg-primary rounded-pill">@item.Usage.Value</span>
+                            @if (item.Usage.ReturnedDate != null)
+                            {
+                                <span>返却した日: @item.Usage.ReturnedDate</span>
+                            }
+                            @if (item.Usage.ScheduledReturnDate != null)
+                            {
+                                <span>返却予定日: @item.Usage.ScheduledReturnDate</span>
+                            }
+                            @if (item.Usage.CancelledDate != null)
+                            {
+                                <span>キャンセルした日: @item.Usage.CancelledDate</span>
+                            }
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

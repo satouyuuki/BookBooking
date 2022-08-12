@@ -81,7 +81,7 @@ namespace BookBooking.Controllers
 
 
         // GET api/values/5
-        public async Task<ActionResult<Book>> Detail(int id)
+        public async Task<ActionResult<BookDetailViewModel>> Detail(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
             var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
