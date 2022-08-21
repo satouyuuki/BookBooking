@@ -1,4 +1,6 @@
-﻿namespace BookBooking.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BookBooking.Models
 {
     public class BookUsage
     {
@@ -42,12 +44,16 @@
         public enum UsageType
         {
             // 借りている
+            [Display(Name = "借りている")]
             Borrowed,
             // 予約中
+            [Display(Name = "予約中")]
             Reservation,
             // 返却済み
+            [Display(Name = "返却済み")]
             Returned,
             // キャンセル済み
+            [Display(Name = "キャンセル済み")]
             Cancelled,
         }
     }

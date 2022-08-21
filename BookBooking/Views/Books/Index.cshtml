@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<BookBooking.Models.BookListViewModel>
-
+@using BookBooking.Attributes
 
 <div class="container">
     <div class="row">
@@ -13,7 +13,11 @@
                         @item.Title
                         <div class="image-parent">
                             <img src="~/@item.GetImageUrl()" alt="@item.Title" class="img-thumbnail" style="max-height: 100px;">
-                            <span class="badge bg-primary rounded-pill">@item.Status</span>
+                            @*<span class="badge bg-primary rounded-pill">@item.Status</span>*@
+                        <span class="badge bg-primary rounded-pill">
+                            @item.Status.GetDisplayName()
+                        </span>
+                            
                         </div>
                     </a>
                 }

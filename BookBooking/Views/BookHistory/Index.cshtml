@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<BookBooking.Models.BookHistoryViewModel>
-
+@using BookBooking.Attributes
 
 <div class="container">
     <div class="row">
@@ -14,7 +14,7 @@
                         @item.Title
                         <div class="image-parent">
                             <img src="~/@item.GetImageUrl()" alt="@item.Title" class="img-thumbnail" style="max-height: 100px;">
-                            <span class="badge bg-primary rounded-pill">@item.Usage.Value</span>
+                            <span class="badge bg-primary rounded-pill">@item.Usage.Value.GetDisplayName()</span>
                             @if (item.Usage.ReturnedDate != null)
                             {
                                 <span>返却した日: @item.Usage.ReturnedDate</span>

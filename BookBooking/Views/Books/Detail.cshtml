@@ -1,4 +1,5 @@
 ﻿@model BookBooking.Models.BookDetailViewModel
+@using BookBooking.Attributes
 
 <div class="card" style="max-width: 500px;">
     <div class="row g-0">
@@ -10,7 +11,7 @@
                 <h5 class="card-title">@Model.Title</h5>
                 <p class="card-text">@Model.Description</p>
 
-                <span class="badge bg-primary rounded-pill">@Model.Status</span>
+                <span class="badge bg-primary rounded-pill">@Model.Status.GetDisplayName()</span>
                 @{
                     var role = User.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value;
                     var isAdmin = role == BookBooking.Models.UserRole.Admin.ToString();

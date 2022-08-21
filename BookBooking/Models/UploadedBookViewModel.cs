@@ -16,7 +16,7 @@ namespace BookBooking.Models
         [Display(Name = "サムネイル")]
         public IFormFile? File { get; set; }
 
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
 
         public string GetImageUrl()
         {

@@ -1,0 +1,26 @@
+﻿@model BookBooking.Models.User
+
+<div>
+    アカウント名<br />
+    @Model.Name
+</div>
+<div>
+    メールアドレス<br />
+    @Model.Email
+</div>
+
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id" type="hidden" />
+
+    <div class="form-outline mb-4">
+        <label asp-for="Role"></label>
+        <select asp-for="Role" asp-items="Html.GetEnumSelectList<BookBooking.Models.UserRole>()">
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <button asp-action="Edit" class="btn btn-primary btn-block mb-4">管理者権限を変更</button>
+    <button asp-action="Delete" class="btn btn-secondary btn-block mb-4">ユーザー情報を削除</button>
+
+</form>

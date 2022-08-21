@@ -44,11 +44,21 @@
                                        asp-action="Create"
                                        class="nav-link active">本の登録</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a asp-controller="UserInfomation"
+                                       asp-action="Index"
+                                       class="nav-link active">利用者一覧</a>
+                                </li>
                             }
                             <li class="nav-item">
                                 <a asp-controller="Account"
                                    asp-action="Edit"
                                    class="nav-link active">利用者情報</a>
+                            </li>
+                            <li class="nav-item">
+                                <a asp-controller="BookHistory"
+                                   asp-action="Index"
+                                   class="nav-link active">利用履歴</a>
                             </li>
                         }
                     }
