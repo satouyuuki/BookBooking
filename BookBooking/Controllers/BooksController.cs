@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BookBooking.Migrations;
 using BookBooking.Models;
+using BookBooking.Models.BookStatus;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
@@ -37,7 +38,10 @@ namespace BookBooking.Controllers
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
             var books = _context.Books.ToList();
-            var bookHistory = _context.BookHistory.ToList();
+            var notReturnedbookHistories = _context.BookHistory
+                 .Where(bh =>
+                    bh.ReturnDate == DateTime.MinValue)
+                .ToList();
 
             var viewModel = books.Select(x => {
                 return new BookListViewModel
@@ -45,52 +49,25 @@ namespace BookBooking.Controllers
                     Id = x.Id,
                     Title = x.Title,
                     ImageUrl = x.ImageUrl,
-                    Status = GetStatus(x.Id, userId, bookHistory)
+                    Status = new BookStatus(userId, notReturnedbookHistories.Where(bh => bh.BookId == x.Id).ToList())
                 };
             });
             return View(viewModel);
         }
 
-        private BookStatus GetStatus(int bookId, int userId, List<BookHistory> bookHistories)
-        {
-            if (bookHistories == null || bookHistories.Count == 0) return BookStatus.AvailableForLend;
-            var notReturnedBookList = bookHistories.Where(x => DateTime.MinValue == x.ReturnDate);
-            var isReservation = notReturnedBookList.Any(x =>
-                x.BookId == bookId &&
-                x.UserId == userId &&
-                x.ScheduledReturnDate == DateTime.MinValue);
-            var isBorrowed = notReturnedBookList.Any(x =>
-                x.BookId == bookId &&
-                x.UserId == userId &&
-                x.ScheduledReturnDate != DateTime.MinValue);
-            var isReserved = notReturnedBookList.Any(x => x.BookId == bookId && x.UserId != userId);
-
-            // 全ての本が返却ずみ
-            if (notReturnedBookList == null || notReturnedBookList.Count() == 0) return BookStatus.AvailableForLend;
-            // 自分が借りている
-            if (isBorrowed) return BookStatus.Borrowed;
-            // 自分が予約中である
-            if (isReservation) return BookStatus.Reservation;
-            // 他人が予約中である
-            if (isReserved) return BookStatus.Reserved;
-            // それ以外: 予約可能である
-            return BookStatus.AvailableForLend;
-            // TODO: 禁止である
-            //return BookStatus.Restriction;
-        }
-
-
         // GET api/values/5
-        public async Task<ActionResult<BookDetailViewModel>> Detail(int id)
+        public ActionResult<BookDetailViewModel> Detail(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
-            var bookHistories = _context.BookHistory.ToList();
-
-            if (book == null)
-            {
-                return NotFound();
-            }
+            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            if (book == null) return NotFound();
+            // userIdを絞らないことで何件予約が入ってるかが分かる
+            // TODO: 予定日をすぎてるものに関してはフィルタをかけると良いかも
+            var notReturnedbookHistories = _context.BookHistory
+                .Where(bh =>
+                bh.BookId == book.Id &&
+                bh.ReturnDate == DateTime.MinValue)
+                .ToList();
 
             return View(new BookDetailViewModel
             {
@@ -98,7 +75,7 @@ namespace BookBooking.Controllers
                 Description = book.Description,
                 Title = book.Title,
                 ImageUrl = book.ImageUrl,
-                Status = GetStatus(book.Id, userId, bookHistories)
+                Status = new BookStatus(userId, notReturnedbookHistories)
             });
         }
 
@@ -111,7 +88,8 @@ namespace BookBooking.Controllers
                 BookId = id,
                 UserId = userId,
                 ReservedDate = DateTime.Now,
-                ScheduledReturnDate = DateTime.Now.AddDays(7)
+                //IsCompleted = false,
+                //ScheduledReturnDate = DateTime.Now.AddDays(7)
             };
             _context.BookHistory.Add(bookHistory);
             await _context.SaveChangesAsync();
@@ -125,7 +103,8 @@ namespace BookBooking.Controllers
             var bookHistory = _context.BookHistory.FirstOrDefault(x =>
                 x.BookId == id &&
                 x.UserId == userId &&
-                x.ScheduledReturnDate != DateTime.MinValue);
+                x.ScheduledReturnDate != DateTime.MinValue &&
+                x.ReturnDate == DateTime.MinValue);
             bookHistory.ReturnDate = DateTime.Now;
 
             _context.BookHistory.Update(bookHistory);

@@ -28,6 +28,11 @@
     <None Remove="Views\BookHistory\" />
     <None Remove="Attributes\" />
     <None Remove="Views\UserInfomation\" />
+    <None Remove="Areas\" />
+    <None Remove="Areas\Api\" />
+    <None Remove="Areas\Api\Controllers\" />
+    <None Remove="Areas\Api\Views\" />
+    <None Remove="Models\BookStatus\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -44,6 +49,11 @@
     <Folder Include="Views\BookHistory\" />
     <Folder Include="Attributes\" />
     <Folder Include="Views\UserInfomation\" />
+    <Folder Include="Areas\" />
+    <Folder Include="Areas\Api\" />
+    <Folder Include="Areas\Api\Controllers\" />
+    <Folder Include="Areas\Api\Views\" />
+    <Folder Include="Models\BookStatus\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />

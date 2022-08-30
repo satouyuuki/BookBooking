@@ -22,6 +22,8 @@ namespace BookBooking.Models
         [Required]
         public DateTime ScheduledReturnDate { get; set; }
         public DateTime ReturnDate { get; set; }
+
+        public bool IsCompleted { get; set; } = false;
     }
 }
 

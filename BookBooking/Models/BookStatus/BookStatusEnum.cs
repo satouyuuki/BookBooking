@@ -1,10 +1,8 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace BookBooking.Models
+namespace BookBooking.Models.BookStatus
 {
-    public enum BookStatus
+    public enum BookStatusEnum
     {
         // 貸し出し可能
         [Display(Name = "貸し出し可能")]

@@ -13,7 +13,7 @@ namespace BookBooking.Models
         public string Description { get; set; }
         public string ImageUrl { get; set; }
 
-        public BookStatus Status { get; set; }
+        public BookBooking.Models.BookStatus.BookStatus Status { get; set; }
 
         public string GetImageUrl()
         {
@@ -23,26 +23,26 @@ namespace BookBooking.Models
             return $"{baseDir}/{ImageUrl}";
         }
 
-        public KeyValuePair<string, string> RouteName
-        {
-            get
-            {
-                switch (Status)
-                {
-                    case BookBooking.Models.BookStatus.AvailableForLend:
-                        return new KeyValuePair<string, string>("Borrow", "借りる");
-                    case BookBooking.Models.BookStatus.Borrowed:
-                        return new KeyValuePair<string, string>("Return", "返す");
-                    case BookBooking.Models.BookStatus.Reservation:
-                        return new KeyValuePair<string, string>("Cancel", "キャンセルする");
-                    case BookBooking.Models.BookStatus.Reserved:
-                        return new KeyValuePair<string, string>("Reserve", "予約する");
-                    default:
-                        throw new Exception("book state error");
-                }
+        //public KeyValuePair<string, string> RouteName
+        //{
+        //    get
+        //    {
+        //        switch (Status)
+        //        {
+        //            case BookBooking.Models.BookStatus.AvailableForLend:
+        //                return new KeyValuePair<string, string>("Borrow", "借りる");
+        //            case BookBooking.Models.BookStatus.Borrowed:
+        //                return new KeyValuePair<string, string>("Return", "返す");
+        //            case BookBooking.Models.BookStatus.Reservation:
+        //                return new KeyValuePair<string, string>("Cancel", "キャンセルする");
+        //            case BookBooking.Models.BookStatus.Reserved:
+        //                return new KeyValuePair<string, string>("Reserve", "予約する");
+        //            default:
+        //                throw new Exception("book state error");
+        //        }
 
-            }
-        }
+        //    }
+        //}
     }
 }
 

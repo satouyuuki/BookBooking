@@ -11,7 +11,9 @@
                 <h5 class="card-title">@Model.Title</h5>
                 <p class="card-text">@Model.Description</p>
 
-                <span class="badge bg-primary rounded-pill">@Model.Status.GetDisplayName()</span>
+                <span class="badge bg-primary rounded-pill">
+                    @Model.Status.Item.Status.GetDisplayName()
+                </span>
                 @{
                     var role = User.Claims.FirstOrDefault(x => x.Type.Contains("role")).Value;
                     var isAdmin = role == BookBooking.Models.UserRole.Admin.ToString();
@@ -30,13 +32,16 @@
                 }
                 else
                 {
-                    <form asp-route="@Model.RouteName.Key"
+                    <form asp-route="@Model.Status.Item.NextActionName"
                           asp-route-id="@Model.Id"
                           method="post">
-                        <button class="btn btn-primary stretched-link">@Model.RouteName.Value</button>
+                        <button class="btn btn-primary stretched-link">@Model.Status.Item.DisplayNextActionName</button>
                     </form>
                 }
             </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="~/Views/Books/Detail.cshtml.js"></script>
+}

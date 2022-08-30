@@ -10,7 +10,7 @@ namespace BookBooking.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public string ImageUrl { get; set; }
-        public BookStatus Status { get; set; }
+        public BookBooking.Models.BookStatus.BookStatus Status { get; set; }
 
         public string GetImageUrl()
         {
