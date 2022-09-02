@@ -183,7 +183,7 @@ namespace BookBooking.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             SetFlash(FlashMessageType.Success, "ログアウトしました。");
-            return RedirectToAction();
+            return RedirectToAction(nameof(BooksController.Index), "Books");
         }
 
         public class LoginRequest
