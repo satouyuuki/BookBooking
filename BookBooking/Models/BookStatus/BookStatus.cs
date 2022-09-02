@@ -17,9 +17,29 @@ namespace BookBooking.Models.BookStatus
                 return;
             }
 
-            var isReservation = notReturnedBookList.Any(x =>
+            var firstReservation = notReturnedBookList
+                .OrderByDescending(x => x.ReservedDate)
+                .FirstOrDefault(x =>
                 x.UserId == userId &&
                 x.ScheduledReturnDate == DateTime.MinValue);
+
+            // 自分が予約中である
+            if (firstReservation != null)
+            {
+                Item = BookStateFactory.Reservation;
+                return;
+            }
+            // 他人が予約中である
+            else
+            {
+                Item = BookStateFactory.Reserved;
+                return;
+            }
+
+            // 古い仕様
+            //var isReservation = notReturnedBookList.Any(x =>
+            //    x.UserId == userId &&
+            //    x.ScheduledReturnDate == DateTime.MinValue);
             var isBorrowed = notReturnedBookList.Any(x =>
                 x.UserId == userId &&
                 x.ScheduledReturnDate != DateTime.MinValue);
@@ -29,12 +49,6 @@ namespace BookBooking.Models.BookStatus
             // 自分が借りている
             if (isBorrowed)
                 Item = BookStateFactory.Borrowed;
-            // 自分が予約中である
-            else if (isReservation)
-                Item = BookStateFactory.Reservation;
-            // 他人が予約中である
-            else if (isReserved)
-                Item = BookStateFactory.Reserved;
             // それ以外: 予約可能である
             else
                 Item = BookStateFactory.AvailableForLend;
@@ -64,9 +78,9 @@ namespace BookBooking.Models.BookStatus
 
     internal class ReservationBook : IBookStatus
     {
-        public string NextActionName => "Cancel";
+        public string NextActionName => "ShowBarCode";
 
-        public string DisplayNextActionName => "キャンセルする";
+        public string DisplayNextActionName => "バーコードを提示する";
 
         public BookStatusEnum Status => BookStatusEnum.Reservation;
     }

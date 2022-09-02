@@ -32,11 +32,25 @@
                 }
                 else
                 {
-                    <form asp-route="@Model.Status.Item.NextActionName"
-                          asp-route-id="@Model.Id"
-                          method="post">
-                        <button class="btn btn-primary stretched-link">@Model.Status.Item.DisplayNextActionName</button>
-                    </form>
+                    if (Model.Status.Item.Status == Models.BookStatus.BookStatusEnum.Reservation)
+                    {
+                        <button id="@Model.Status.Item.NextActionName"
+                                data-bookid="@Model.Id"
+                                class="btn btn-primary stretched-link">
+                            @Model.Status.Item.DisplayNextActionName
+                        </button>
+                        <div id="message"></div>
+                        <div id="button_area"></div>
+                    }
+                    else
+                    {
+                        <form asp-route="@Model.Status.Item.NextActionName"
+                              asp-route-id="@Model.Id"
+                              method="post">
+                            <button class="btn btn-primary stretched-link">@Model.Status.Item.DisplayNextActionName</button>
+                        </form>
+                    }
+
                 }
             </div>
         </div>

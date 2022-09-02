@@ -10,8 +10,8 @@ namespace BookBooking.Models.BookStatus
         // 借りている
         [Display(Name = "借りている")]
         Borrowed,
-        // 予約中
-        [Display(Name = "予約中")]
+        // 取り置き中
+        [Display(Name = "取置き中")]
         Reservation,
         // 予約されている
         [Display(Name = "予約されている")]

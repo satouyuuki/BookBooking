@@ -88,8 +88,6 @@ namespace BookBooking.Controllers
                 BookId = id,
                 UserId = userId,
                 ReservedDate = DateTime.Now,
-                //IsCompleted = false,
-                //ScheduledReturnDate = DateTime.Now.AddDays(7)
             };
             _context.BookHistory.Add(bookHistory);
             await _context.SaveChangesAsync();
@@ -125,6 +123,13 @@ namespace BookBooking.Controllers
             _context.BookHistory.Add(bookHistory);
             await _context.SaveChangesAsync();
             return RedirectToAction("Detail", new { id = id });
+        }
+
+        [HttpGet("Books/Detail/{id:int}/ShowBarCode", Name = "ShowBarCode")]
+        public IActionResult ShowBarCode(int id)
+        {
+            var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
+            return PartialView("_BarCode", id + "_" + userId);
         }
 
         [HttpPost("Books/Detail/{id:int}/Cancel", Name = "Cancel")]
