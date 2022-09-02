@@ -6,8 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager configuration = builder.Configuration;
 
-// Add services to the container.
-
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -17,13 +15,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
         options.AccessDeniedPath = new PathString("/Account/Denied");
     });
-//builder.Services.AddControllersWithViews();
-//builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
+
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 27));
 builder.Services.AddDbContext<BookContext>(opt =>
-    //opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
     opt.UseMySql(configuration.GetConnectionString("DefaultConnection"), serverVersion)
     );
 
@@ -43,19 +37,13 @@ using(var scope = app.Services.CreateScope())
     SeedData.Initialize(services);
 }
 
-// Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
 //    app.UseSwagger();
 //    app.UseSwaggerUI();
 //}
 
-//app.UseDefaultFiles();
-app.UseStaticFiles();
 
-app.UseHttpsRedirection();
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -63,23 +51,21 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-//app.UseStatusCodePages();
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.UseMvcWithDefaultRoute();
 app.MapControllerRoute(
     name: "MyArea",
     pattern: "{area:exists}/{controller=Books}/{action=Index}/{id?}");
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Books}/{action=Index}/{id?}");
-
-//app.MapControllers();
 
 app.Run();
 
