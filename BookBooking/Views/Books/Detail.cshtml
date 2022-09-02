@@ -32,10 +32,13 @@
                 }
                 else
                 {
-                    if (Model.Status.Item.Status == Models.BookStatus.BookStatusEnum.Reservation)
+                    if (
+                        Model.Status.Item.Status == Models.BookStatus.BookStatusEnum.Reservation ||
+                        Model.Status.Item.Status == Models.BookStatus.BookStatusEnum.Returning
+                    )
                     {
                         <button id="@Model.Status.Item.NextActionName"
-                                data-bookid="@Model.Id"
+                                data-bookHistoryId="@Model.Status.BookHistoryId"
                                 class="btn btn-primary stretched-link">
                             @Model.Status.Item.DisplayNextActionName
                         </button>

@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
+    <PackageReference Include="ZXing.Net" Version="0.16.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <None Remove="Areas\Api\Controllers\" />
     <None Remove="Areas\Api\Views\" />
     <None Remove="Models\BookStatus\" />
+    <None Remove="ZXing.Net" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -62,5 +64,11 @@
     <Content Remove="wwwroot\ts\" />
     <Content Remove="wwwroot\lib\" />
     <Content Remove="wwwroot\Uploads\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Views\Books\Lending.cshtml.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
   </ItemGroup>
 </Project>

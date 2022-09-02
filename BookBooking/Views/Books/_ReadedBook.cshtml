@@ -1,0 +1,31 @@
+﻿@model BookBooking.Models.ReadedBookViewModel
+
+<br />
+タイトル: @Model.Title
+<br />
+ユーザー: @Model.UserName
+<br />
+予約日: @Model.ReservedDate
+<br />
+返却予定日: @Model.ScheduledReturnDate
+<br />
+返却日: @Model.ReturnDate
+<br />
+
+<form asp-action="Lending" method="post">
+    <input asp-for="BookHistoryId" />
+    <input asp-for="ScheduledReturnDate" />
+    <input asp-for="ReturnDate" />
+    @if (Model.canBorrow)
+    {
+        <button>
+            貸出を承認
+        </button>
+    }
+    @if (Model.canReturn)
+    {
+        <button>
+            返却を承認
+        </button>
+    }
+</form>

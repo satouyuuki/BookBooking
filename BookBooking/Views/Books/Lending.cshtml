@@ -1,0 +1,19 @@
+﻿@model BookBooking.Models.LendingViewModel
+
+<h1>入出庫処理</h1>
+
+<div class="mb-3">
+    <label asp-for="BarcodeId" class="form-label"></label>
+    <input asp-for="BarcodeId" id="BarcodeId" class="form-control" />
+    <span asp-validation-for="BarcodeId"></span>
+</div>
+<button id="search"
+        class="btn bg-success text-white">
+    検索
+</button>
+<div id="message"></div>
+<div id="button_area"></div>
+
+@section Scripts {
+    <script src="~/Views/Books/Lending.cshtml.js"></script>
+}

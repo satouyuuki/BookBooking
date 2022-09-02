@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using ZXing;
+using ZXing.QrCode;
 //using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -103,10 +106,11 @@ namespace BookBooking.Controllers
                 x.UserId == userId &&
                 x.ScheduledReturnDate != DateTime.MinValue &&
                 x.ReturnDate == DateTime.MinValue);
-            bookHistory.ReturnDate = DateTime.Now;
+            bookHistory.IsCompleted = false;
 
             _context.BookHistory.Update(bookHistory);
             await _context.SaveChangesAsync();
+            SetFlash(FlashMessageType.Success, "処理が完了しました。管理者にコードを提示してください");
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -125,11 +129,62 @@ namespace BookBooking.Controllers
             return RedirectToAction("Detail", new { id = id });
         }
 
-        [HttpGet("Books/Detail/{id:int}/ShowBarCode", Name = "ShowBarCode")]
-        public IActionResult ShowBarCode(int id)
+        [HttpGet("Books/Detail/{bookHistoryId:int}/ShowBarCode", Name = "ShowBarCode")]
+        public IActionResult ShowBarCode(int bookHistoryId)
         {
-            var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            return PartialView("_BarCode", id + "_" + userId);
+            // TODO: バーコードを表示する
+            return PartialView("_BarCode", bookHistoryId);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Lending()
+        {
+            return View(new LendingViewModel());
+        }
+
+        [HttpGet]
+        public IActionResult SearchLending(int id)
+        {
+            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == id);
+            if(bookHistory == null)
+            {
+                return View();
+            }
+            var book = _context.Books.FirstOrDefault(x => x.Id == bookHistory.BookId);
+            var user = _context.Users.FirstOrDefault(x => x.Id == bookHistory.UserId);
+            var viewModel = new ReadedBookViewModel
+            {
+                BookHistoryId = bookHistory.BookHistoryId,
+                Title = book.Title,
+                UserName = user.Name,
+                ReservedDate = bookHistory.ReservedDate,
+                ScheduledReturnDate = bookHistory.ScheduledReturnDate,
+                ReturnDate = bookHistory.ReturnDate,
+            };
+            return PartialView("_ReadedBook", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Lending(ReadedBookViewModel viewModel)
+        {
+            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == viewModel.BookHistoryId);
+            if (viewModel.canBorrow)
+            {
+                bookHistory.ScheduledReturnDate = DateTime.Now.AddDays(7);
+                bookHistory.IsCompleted = true;
+            }
+            if (viewModel.canReturn)
+            {
+                bookHistory.ReturnDate = DateTime.Now;
+                bookHistory.IsCompleted = true;
+            }
+            _context.BookHistory.Update(bookHistory);
+            await _context.SaveChangesAsync();
+            SetFlash(FlashMessageType.Success, "処理が完了しました");
+            return View();
         }
 
         [HttpPost("Books/Detail/{id:int}/Cancel", Name = "Cancel")]

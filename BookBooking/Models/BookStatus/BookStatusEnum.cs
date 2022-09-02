@@ -16,6 +16,9 @@ namespace BookBooking.Models.BookStatus
         // 予約されている
         [Display(Name = "予約されている")]
         Reserved,
+        // 返却中
+        [Display(Name = "返却中")]
+        Returning,
         // 貸出禁止
         [Display(Name = "貸出禁止")]
         Restriction,
