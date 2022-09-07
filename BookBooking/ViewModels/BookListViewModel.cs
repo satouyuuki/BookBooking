@@ -2,7 +2,7 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
 
     public class BookListViewModel

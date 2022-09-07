@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BookBooking.Migrations;
 using BookBooking.Models;
 using BookBooking.Models.BookStatus;
+using BookBooking.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;

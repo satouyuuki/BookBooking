@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
     public class LoginViewModel
     {

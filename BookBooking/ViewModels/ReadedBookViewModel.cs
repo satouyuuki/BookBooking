@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
     public class ReadedBookViewModel
     {

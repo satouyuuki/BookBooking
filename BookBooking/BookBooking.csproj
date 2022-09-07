@@ -35,6 +35,7 @@
     <None Remove="Areas\Api\Views\" />
     <None Remove="Models\BookStatus\" />
     <None Remove="ZXing.Net" />
+    <None Remove="Models\EntityModels\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -56,6 +57,7 @@
     <Folder Include="Areas\Api\Controllers\" />
     <Folder Include="Areas\Api\Views\" />
     <Folder Include="Models\BookStatus\" />
+    <Folder Include="Models\EntityModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />

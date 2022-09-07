@@ -1,22 +1,19 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
-    public class UploadedBookViewModel
+    [Bind]
+    public class BookDetailViewModel
     {
         public int Id { get; set; }
-
-        [Required]
-        [Display(Name = "タイトル")]
         public string Title { get; set; }
-        [Display(Name = "説明")]
         public string Description { get; set; }
-        [Display(Name = "サムネイル")]
-        public IFormFile? File { get; set; }
+        public string ImageUrl { get; set; }
 
-        public string? ImageUrl { get; set; }
+        public BookBooking.Models.BookStatus.BookStatus Status { get; set; }
 
         public string GetImageUrl()
         {

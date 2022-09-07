@@ -20,9 +20,9 @@ namespace BookBooking.Models
                 context.Books.Add(
                     new Book
                     {
-                        Title = "test1",
-                        Description = "test1 desc",
-                        ImageUrl = "20220712010812_buranko_girl_sad.png"
+                        Title = "test book",
+                        Description = "test book desc",
+                        ImageUrl = "noImage.png"
                     });
                 context.SaveChanges();
 

@@ -11,11 +11,11 @@ namespace BookBooking.Models
 
         [ForeignKey("UsersTable")]
         public int UserId { get; set; }
-        public User UsersTable { get; set; } = null!;
+        public User UsersTable { get; set; }
         
         [ForeignKey("BooksTable")]
         public int BookId { get; set; }
-        public Book BooksTable { get; set; } = null!;
+        public Book BooksTable { get; set; }
 
         [Required]
         public DateTime ReservedDate { get; set; }

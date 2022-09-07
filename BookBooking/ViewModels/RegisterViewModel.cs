@@ -1,9 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using BookBooking.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
     public class RegisterViewModel
     {

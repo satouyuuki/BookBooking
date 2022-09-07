@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BookBooking.Models;
 
-namespace BookBooking.Models
+namespace BookBooking.ViewModels
 {
     public class BookHistoryViewModel
     {
