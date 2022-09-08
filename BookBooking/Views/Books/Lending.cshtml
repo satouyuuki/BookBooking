@@ -11,9 +11,16 @@
         class="btn bg-success text-white">
     検索
 </button>
+<div id="reader" width="600"></div>
+
 <div id="message"></div>
 <div id="button_area"></div>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.2.1/html5-qrcode.min.js"
+            integrity="sha512-cuVnjPNH3GyigomLiyATgpCoCmR9T3kwjf94p0BnSfdtHClzr1kyaMHhUmadydjxzi1pwlXjM5sEWy4Cd4WScA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer">
+    </script>
     <script src="~/Views/Books/Lending.cshtml.js"></script>
 }

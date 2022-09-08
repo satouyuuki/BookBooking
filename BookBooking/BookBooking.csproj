@@ -14,6 +14,8 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
     <PackageReference Include="ZXing.Net" Version="0.16.8" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+    <PackageReference Include="ZXing.Net.Bindings.ImageSharp.V2" Version="0.16.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +38,10 @@
     <None Remove="Models\BookStatus\" />
     <None Remove="ZXing.Net" />
     <None Remove="Models\EntityModels\" />
+    <None Remove="System.Drawing.Common" />
+    <None Remove="ZXing.Net.Bindings.ImageSharp" />
+    <None Remove="TagHelpers\" />
+    <None Remove="ZXing.Net.Bindings.ImageSharp.V2" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -58,6 +64,7 @@
     <Folder Include="Areas\Api\Views\" />
     <Folder Include="Models\BookStatus\" />
     <Folder Include="Models\EntityModels\" />
+    <Folder Include="TagHelpers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />

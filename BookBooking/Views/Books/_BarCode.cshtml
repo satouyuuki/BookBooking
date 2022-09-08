@@ -1,3 +1,11 @@
-﻿@model int
+﻿@model string
 
-<div id="BarCodeArea">@Model</div>
+@*<div id="BarCodeArea">@Model</div>*@
+@*<img src="@Model" alt="バーコード"/>*@
+
+<barcode
+         barcode-id="@Model"
+         height="50"
+         width="400"
+         alt="@Model"
+         ></barcode>

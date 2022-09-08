@@ -9,10 +9,12 @@ $(document).ready(function () {
     });
 
     // 指定したパスの partial view を読み込む
+
     function loadPartialView(loadPath) {
         $("#button_area").text('読み込み中…。');
         $("#button_area").load(loadPath, function (response, status, xhr) {
             // status === 'error' ならエラーと判断
+
             if (status === 'error') {
                 $('#message').text('エラー (status : ' + xhr.status + ', statusText : ' + xhr.statusText + ')');
             } else {

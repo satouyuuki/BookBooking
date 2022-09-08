@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using BookBooking.Migrations;
 using BookBooking.Models;
 using BookBooking.Models.BookStatus;
 using BookBooking.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ZXing;
+using ZXing.Common;
 using ZXing.QrCode;
+using ZXing.QrCode.Internal;
+using ZXing.Rendering;
 //using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
@@ -134,7 +141,8 @@ namespace BookBooking.Controllers
         public IActionResult ShowBarCode(int bookHistoryId)
         {
             // TODO: バーコードを表示する
-            return PartialView("_BarCode", bookHistoryId);
+            
+            return PartialView("_BarCode", bookHistoryId.ToString());
         }
 
         [HttpGet]
@@ -145,13 +153,16 @@ namespace BookBooking.Controllers
         }
 
         [HttpGet]
-        public IActionResult SearchLending(int id)
+        public IActionResult SearchLending(string id)
         {
-            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == id);
+            int bookHistoryId;
+            int.TryParse(id, out bookHistoryId);
+            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == bookHistoryId);
             if(bookHistory == null)
             {
                 return View();
             }
+
             var book = _context.Books.FirstOrDefault(x => x.Id == bookHistory.BookId);
             var user = _context.Users.FirstOrDefault(x => x.Id == bookHistory.UserId);
             var viewModel = new ReadedBookViewModel

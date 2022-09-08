@@ -1,18 +1,13 @@
 ﻿$(document).ready(function () {
-    // ボタンを押したときに読み込む
-    $("#search").click(function () {
-        console.log($("#BarcodeId").val());
-        var id = $("#BarcodeId").val();
-        // 存在するアクションを指定
-        loadPartialView(`/Books/SearchLending/${id}`);
-    });
-    // 指定したパスの partial view を読み込む
+    function onScanSuccess(decodedText, decodedResult) {
+        console.log(`Scan result: ${decodedText}`, decodedResult);
+        loadPartialView(`/Books/SearchLending/${decodedText}`);
+        html5QrcodeScanner.clear();
+    }
 
     function loadPartialView(loadPath) {
         $("#button_area").text('読み込み中…。');
         $("#button_area").load(loadPath, function (response, status, xhr) {
-            // status === 'error' ならエラーと判断
-
             if (status === 'error') {
                 $('#message').text('エラー (status : ' + xhr.status + ', statusText : ' + xhr.statusText + ')');
             } else {
@@ -20,4 +15,14 @@
             }
         });
     }
+
+    var html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+
+    $("#search").click(function () {
+        console.log($("#BarcodeId").val());
+        var id = $("#BarcodeId").val();
+        loadPartialView(`/Books/SearchLending/${id}`);
+    });
 });
