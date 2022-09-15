@@ -14,5 +14,8 @@ namespace BookBooking.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "パスワード")]
         public string Password { get; set; }
+
+        [Display(Name = "自動ログイン機能")]
+        public bool RememberMe { get; set; }
     }
 }

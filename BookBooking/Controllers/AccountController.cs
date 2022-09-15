@@ -66,7 +66,6 @@ namespace BookBooking.Controllers
                 return View(viewModel);
             }
             var isVerfyPassword = new PasswordHasher<ClaimsPrincipal>().VerifyHashedPassword(User, currentUser.Password, viewModel.Password) == PasswordVerificationResult.Success;
-            //else if (currentUser.Password != viewModel.Password)
             if (!isVerfyPassword)
             {
                 ModelState.AddModelError("Password", "パスワードが一致しません。");
@@ -175,7 +174,6 @@ namespace BookBooking.Controllers
             _context.SaveChanges();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             SetFlash(FlashMessageType.Success, "ユーザーの削除に成功しました。");
-            //return RedirectToAction(nameof(Logout));
             return RedirectToAction();
         }
 
@@ -185,12 +183,6 @@ namespace BookBooking.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             SetFlash(FlashMessageType.Success, "ログアウトしました。");
             return RedirectToAction(nameof(BooksController.Index), "Books");
-        }
-
-        public class LoginRequest
-        {
-            public string username { get; set; }
-            public string email { get; set; }
         }
     }
 }

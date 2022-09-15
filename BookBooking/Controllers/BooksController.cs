@@ -20,10 +20,7 @@ using ZXing.Common;
 using ZXing.QrCode;
 using ZXing.QrCode.Internal;
 using ZXing.Rendering;
-//using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BookBooking.Controllers
 {
@@ -66,7 +63,6 @@ namespace BookBooking.Controllers
             return View(viewModel);
         }
 
-        // GET api/values/5
         public ActionResult<BookDetailViewModel> Detail(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
@@ -140,8 +136,6 @@ namespace BookBooking.Controllers
         [HttpGet("Books/Detail/{bookHistoryId:int}/ShowBarCode", Name = "ShowBarCode")]
         public IActionResult ShowBarCode(int bookHistoryId)
         {
-            // TODO: バーコードを表示する
-            
             return PartialView("_BarCode", bookHistoryId.ToString());
         }
 
@@ -223,7 +217,6 @@ namespace BookBooking.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        // POST api/values
         public async Task<ActionResult<Book>> Create(UploadedBookViewModel viewModel)
         {
             if (!ModelState.IsValid) return View(viewModel);
@@ -282,7 +275,6 @@ namespace BookBooking.Controllers
             {
                 return NotFound();
             }
-            //_context.Entry(book).State = EntityState.Modified;
             if (!ModelState.IsValid) return View(new { id = id });
 
             var model = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);

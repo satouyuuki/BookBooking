@@ -34,7 +34,6 @@
     <None Remove="Areas\" />
     <None Remove="Areas\Api\" />
     <None Remove="Areas\Api\Controllers\" />
-    <None Remove="Areas\Api\Views\" />
     <None Remove="Models\BookStatus\" />
     <None Remove="ZXing.Net" />
     <None Remove="Models\EntityModels\" />
@@ -46,14 +45,10 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="wwwroot\" />
-    <Folder Include="wwwroot\js\" />
-    <Folder Include="wwwroot\css\" />
-    <Folder Include="wwwroot\ts\" />
     <Folder Include="Views\" />
     <Folder Include="Views\Account\" />
     <Folder Include="Views\Books\" />
     <Folder Include="Views\Shared\" />
-    <Folder Include="wwwroot\lib\" />
     <Folder Include="wwwroot\Uploads\" />
     <Folder Include="Views\BookHistory\" />
     <Folder Include="Attributes\" />
@@ -61,17 +56,12 @@
     <Folder Include="Areas\" />
     <Folder Include="Areas\Api\" />
     <Folder Include="Areas\Api\Controllers\" />
-    <Folder Include="Areas\Api\Views\" />
     <Folder Include="Models\BookStatus\" />
     <Folder Include="Models\EntityModels\" />
     <Folder Include="TagHelpers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\" />
-    <Content Remove="wwwroot\js\" />
-    <Content Remove="wwwroot\css\" />
-    <Content Remove="wwwroot\ts\" />
-    <Content Remove="wwwroot\lib\" />
     <Content Remove="wwwroot\Uploads\" />
   </ItemGroup>
   <ItemGroup>

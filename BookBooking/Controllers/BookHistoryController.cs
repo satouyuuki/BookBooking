@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace BookBooking.Controllers
 {
     public class BookHistoryController : ControllerBase
@@ -26,7 +24,6 @@ namespace BookBooking.Controllers
             _context = context;
         }
 
-        // GET: /<controller>/
         public ActionResult<IEnumerable<BookHistoryViewModel>> Index()
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
@@ -48,16 +45,6 @@ namespace BookBooking.Controllers
 
             return View(viewModel);
         }
-
-        //private BookUsage GetBookUsage(BookHistory bookHistory)
-        //{
-        //    //if (bookHistory == null) throw new ArgumentNullException();
-        //    if (bookHistory.ScheduledReturnDate == DateTime.MinValue &&
-        //        bookHistory.ReturnDate == DateTime.MinValue) return BookUsage.Reservation;
-        //    else if (bookHistory.ScheduledReturnDate == DateTime.MinValue) return BookUsage.Cancelled;
-        //    else if (bookHistory.ReturnDate == DateTime.MinValue) return BookUsage.Borrowed;
-        //    return BookUsage.Returned;
-        //}
     }
 }
 
