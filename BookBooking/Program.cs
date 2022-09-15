@@ -26,6 +26,10 @@ builder.Services.AddMvc(options =>
     options.EnableEndpointRouting = false;
 });
 
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IBookHistoryRepository, BookHistoryRepository>();
+
+
 //builder.Services.AddSwaggerGen();
 
 var app = builder.Build();

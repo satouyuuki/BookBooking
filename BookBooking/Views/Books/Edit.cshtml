@@ -3,6 +3,9 @@
 <h1>本の登録</h1>
 
 <form asp-action="Edit" enctype="multipart/form-data">
+    <input hidden asp-for="ImageUrl">
+    <input hidden asp-for="Id" />
+
     <div asp-validation-summary="ModelOnly"></div>
     <div class="mb-3">
         <label asp-for="Title" class="form-label" />
@@ -20,7 +23,7 @@
         <span asp-validation-for="File"></span>
     </div>
     <div class="image-parent">
-        <input type="hidden" asp-for="ImageUrl">
+
         <img src="~/@Model.GetImageUrl()" class="img-fluid" alt="@Model.Title">
     </div>
     <button type="submit" class="btn btn-primary">更新</button>

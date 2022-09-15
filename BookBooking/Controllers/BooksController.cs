@@ -15,11 +15,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MySqlConnector;
 using ZXing;
 using ZXing.Common;
 using ZXing.QrCode;
 using ZXing.QrCode.Internal;
 using ZXing.Rendering;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace BookBooking.Controllers
@@ -27,26 +29,29 @@ namespace BookBooking.Controllers
     [Authorize]
     public class BooksController : ControllerBase
     {
-        private readonly BookContext _context;
         private readonly ILogger<BooksController> _logger;
-        private IHostingEnvironment mxHostingEnvironment { get; set; }
+        private readonly IBookRepository _bookRepository;
+        private readonly IBookHistoryRepository _bookHistoryRepository;
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         public BooksController(
             ILogger<BooksController> logger,
-            BookContext context,
+            IBookRepository bookRepository,
+            IBookHistoryRepository bookHistoryRepository,
             IHostingEnvironment hostingEnvironment
             )
         {
             _logger = logger;
-            _context = context;
-            mxHostingEnvironment = hostingEnvironment;
+            _bookRepository = bookRepository;
+            _bookHistoryRepository = bookHistoryRepository;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public ActionResult<IEnumerable<BookListViewModel>> Index()
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            var books = _context.Books.ToList();
-            var notReturnedbookHistories = _context.BookHistory
+            var books = _bookRepository.GetAllBook();
+            var notReturnedbookHistories = _bookHistoryRepository.GetAllBookHistory()
                  .Where(bh =>
                     bh.ReturnDate == DateTime.MinValue)
                 .ToList();
@@ -66,11 +71,11 @@ namespace BookBooking.Controllers
         public ActionResult<BookDetailViewModel> Detail(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            var book = _context.Books.FirstOrDefault(b => b.Id == id);
+            var book = _bookRepository.GetBook(id);
             if (book == null) return NotFound();
             // userIdを絞らないことで何件予約が入ってるかが分かる
             // TODO: 予定日をすぎてるものに関してはフィルタをかけると良いかも
-            var notReturnedbookHistories = _context.BookHistory
+            var notReturnedbookHistories = _bookHistoryRepository.GetAllBookHistory()
                 .Where(bh =>
                 bh.BookId == book.Id &&
                 bh.ReturnDate == DateTime.MinValue)
@@ -96,8 +101,7 @@ namespace BookBooking.Controllers
                 UserId = userId,
                 ReservedDate = DateTime.Now,
             };
-            _context.BookHistory.Add(bookHistory);
-            await _context.SaveChangesAsync();
+            _bookHistoryRepository.Add(bookHistory);
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -105,15 +109,15 @@ namespace BookBooking.Controllers
         public async Task<ActionResult> Return(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            var bookHistory = _context.BookHistory.FirstOrDefault(x =>
-                x.BookId == id &&
-                x.UserId == userId &&
-                x.ScheduledReturnDate != DateTime.MinValue &&
-                x.ReturnDate == DateTime.MinValue);
+            var bookHistory = _bookHistoryRepository.GetAllBookHistory()
+                .FirstOrDefault(x =>
+                    x.BookId == id &&
+                    x.UserId == userId &&
+                    x.ScheduledReturnDate != DateTime.MinValue &&
+                    x.ReturnDate == DateTime.MinValue);
             bookHistory.IsCompleted = false;
 
-            _context.BookHistory.Update(bookHistory);
-            await _context.SaveChangesAsync();
+            _bookHistoryRepository.Update(bookHistory);
             SetFlash(FlashMessageType.Success, "処理が完了しました。管理者にコードを提示してください");
             return RedirectToAction("Detail", new { id = id });
         }
@@ -128,8 +132,7 @@ namespace BookBooking.Controllers
                 UserId = userId,
                 ReservedDate = DateTime.Now
             };
-            _context.BookHistory.Add(bookHistory);
-            await _context.SaveChangesAsync();
+            _bookHistoryRepository.Add(bookHistory);
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -151,19 +154,18 @@ namespace BookBooking.Controllers
         {
             int bookHistoryId;
             int.TryParse(id, out bookHistoryId);
-            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == bookHistoryId);
+            var bookHistory = _bookHistoryRepository.GetBookHistory(bookHistoryId);
             if(bookHistory == null)
             {
                 return View();
             }
 
-            var book = _context.Books.FirstOrDefault(x => x.Id == bookHistory.BookId);
-            var user = _context.Users.FirstOrDefault(x => x.Id == bookHistory.UserId);
+            var book = _bookRepository.GetBook(bookHistory.BookId);
             var viewModel = new ReadedBookViewModel
             {
                 BookHistoryId = bookHistory.BookHistoryId,
                 Title = book.Title,
-                UserName = user.Name,
+                UserId = bookHistory.UserId,
                 ReservedDate = bookHistory.ReservedDate,
                 ScheduledReturnDate = bookHistory.ScheduledReturnDate,
                 ReturnDate = bookHistory.ReturnDate,
@@ -176,7 +178,7 @@ namespace BookBooking.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Lending(ReadedBookViewModel viewModel)
         {
-            var bookHistory = _context.BookHistory.FirstOrDefault(x => x.BookHistoryId == viewModel.BookHistoryId);
+            var bookHistory = _bookHistoryRepository.GetBookHistory(viewModel.BookHistoryId);
             if (viewModel.canBorrow)
             {
                 bookHistory.ScheduledReturnDate = DateTime.Now.AddDays(7);
@@ -187,8 +189,7 @@ namespace BookBooking.Controllers
                 bookHistory.ReturnDate = DateTime.Now;
                 bookHistory.IsCompleted = true;
             }
-            _context.BookHistory.Update(bookHistory);
-            await _context.SaveChangesAsync();
+            _bookHistoryRepository.Update(bookHistory);
             SetFlash(FlashMessageType.Success, "処理が完了しました");
             return View();
         }
@@ -197,14 +198,14 @@ namespace BookBooking.Controllers
         public async Task<ActionResult> Cancel(int id)
         {
             var userId = int.Parse(User.Claims.FirstOrDefault(arg => arg.Type.Contains("primarysid")).Value);
-            var bookHistory = _context.BookHistory.FirstOrDefault(x =>
-                x.BookId == id &&
-                x.UserId == userId &&
-                x.ScheduledReturnDate == DateTime.MinValue);
+            var bookHistory = _bookHistoryRepository.GetAllBookHistory()
+                .FirstOrDefault(x =>
+                    x.BookId == id &&
+                    x.UserId == userId &&
+                    x.ScheduledReturnDate == DateTime.MinValue);
             bookHistory.ReturnDate = DateTime.Now;
 
-            _context.BookHistory.Update(bookHistory);
-            await _context.SaveChangesAsync();
+            _bookHistoryRepository.Update(bookHistory);
             return RedirectToAction("Detail", new { id = id });
         }
 
@@ -227,24 +228,21 @@ namespace BookBooking.Controllers
                 Description = viewModel.Description
             };
 
-            if (viewModel.File != null && viewModel.File.Length > 0)
+            if (viewModel.File != null)
             {
                 //upload files to wwwroot
                 var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
                     Path.GetFileName(viewModel.File.FileName);
-                //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
-                var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
+                var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", fileName);
 
                 using (var fileSteam = new FileStream(filePath, FileMode.Create))
                 {
                     await viewModel.File.CopyToAsync(fileSteam);
                 }
-                //your logic to save filePath to database
                 model.ImageUrl = fileName;
             }
 
-            _context.Books.Add(model);
-            await _context.SaveChangesAsync();
+            _bookRepository.Add(model);
             SetFlash(FlashMessageType.Success, "本の登録に成功しました。");
             return RedirectToAction(nameof(Index));
         }
@@ -253,7 +251,7 @@ namespace BookBooking.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<UploadedBookViewModel>> Edit(int id)
         {
-            var model = await _context.Books.FindAsync(id);
+            var model = _bookRepository.GetBook(id);
 
             var viewModel = new UploadedBookViewModel
             {
@@ -265,48 +263,43 @@ namespace BookBooking.Controllers
             return View(viewModel);
         }
 
-        // PUT api/values/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(int id, UploadedBookViewModel viewModel)
+        public async Task<IActionResult> Edit(UploadedBookViewModel viewModel)
         {
-            if (id != viewModel.Id)
+            if (!ModelState.IsValid) return View(viewModel);
+
+            var model = _bookRepository.GetBook(viewModel.Id);
+            model.Title = viewModel.Title;
+            model.Description = viewModel.Description;
+
+            if (viewModel.File != null)
             {
-                return NotFound();
-            }
-            if (!ModelState.IsValid) return View(new { id = id });
-
-            var model = await _context.Books.FirstOrDefaultAsync(b => b.Id == id);
-
-            if (string.IsNullOrWhiteSpace(viewModel.Title)) model.Title = viewModel.Title;
-            if (string.IsNullOrWhiteSpace(viewModel.Description)) model.Description = viewModel.Description;
-
-
-            if (viewModel.File != null && viewModel.File.Length > 0)
-            {
+                if (viewModel.ImageUrl != null)
+                {
+                    var imgFilePath = Path.Combine(_hostingEnvironment.WebRootPath,
+                            "Uploads", model.ImageUrl);
+                    System.IO.File.Delete(imgFilePath);
+                }
                 //upload files to wwwroot
                 var fileName = DateTime.Now.ToString("yyyyMMddHHmmss_") +
                     Path.GetFileName(viewModel.File.FileName);
-                //var filePath = Path.Combine(mxHostingEnvironment.ContentRootPath, "Uploads", fileName);
-                var filePath = Path.Combine(mxHostingEnvironment.WebRootPath, "Uploads", fileName);
-
+                var filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Uploads", fileName);
                 using (var fileSteam = new FileStream(filePath, FileMode.Create))
                 {
                     await viewModel.File.CopyToAsync(fileSteam);
                 }
-                //your logic to save filePath to database
                 model.ImageUrl = fileName;
             }
 
             try
             {
-                _context.Update(model);
-                await _context.SaveChangesAsync();
+                _bookRepository.Update(model);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookExists(id))
+                if (!BookExists(viewModel.Id))
                 {
                     return NotFound();
                 }
@@ -319,22 +312,34 @@ namespace BookBooking.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // DELETE api/values/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-            SetFlash(FlashMessageType.Success, "本の削除に成功しました。");
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var deletedBook = _bookRepository.Delete(id);
+                if (deletedBook != null && deletedBook.ImageUrl != null)
+                {
+                    var imgFilePath = Path.Combine(_hostingEnvironment.WebRootPath,
+                            "Uploads", deletedBook.ImageUrl);
+                    System.IO.File.Delete(imgFilePath);
+                    SetFlash(FlashMessageType.Success, "本の削除に成功しました。");
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (MySqlException ex)
+            {
+                _logger.LogError($"本の削除に失敗しました。id: {id}", ex);
+            }
+            SetFlash(FlashMessageType.Error, "本の削除に失敗しました。");
+            return RedirectToAction("Detail", new { id = id });
         }
 
         private bool BookExists(int id)
         {
-            return _context.Books.Any(book => book.Id == id);
+            return _bookRepository.GetAllBook()
+                .Any(book => book.Id == id);
         }
     }
 }
