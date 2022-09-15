@@ -4,20 +4,17 @@
 <div class="container">
     <div class="row">
         @*TODO: 検索ボックス*@
-
         <div class="col">
             <div class="list-group">
                 @foreach (var item in Model)
                 {
                     <a asp-action="Detail" asp-route-id="@item.Id" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         @item.Title
-                        <div class="image-parent">
+                        <div class="image-parent position-relative">
                             <img src="~/@item.GetImageUrl()" alt="@item.Title" class="img-thumbnail" style="max-height: 100px;">
-                            @*<span class="badge bg-primary rounded-pill">@item.Status</span>*@
-                        <span class="badge bg-primary rounded-pill">
-                            @item.Status.Item.Status.GetDisplayName()
-                        </span>
-                            
+                            <span class="position-absolute top-0 start-100 translate-middle badge bg-primary rounded-pill">
+                                @item.Status.Item.Status.GetDisplayName()
+                            </span>
                         </div>
                     </a>
                 }
